@@ -68,20 +68,22 @@ module.exports.handleLogin = (req, res) => {
 }
 
 // load user by id
-module.exports.getUser = (req, res, next) => {
+module.exports.getUser = async (req, res, next) => {
     try {
         const sql = 'SELECT id, name, phone, address, imageURL, role FROM users where id=?';
 
-        db.query(sql, [req.id], (error, rows) => {
-            if (error) {
-                res.status(500).json({
-                    "status": false,
-                    "message": "Failed"
-                });
-            } else {
-                res.status(200).json(rows);
-            }
-        })
+        const rows = await db.query(sql, [req.id]);
+        res.status(200).json(rows[0]);
+        // db.query(sql, [req.id], (error, rows) => {
+        //     if (error) {
+        //         res.status(500).json({
+        //             "status": false,
+        //             "message": "Failed"
+        //         });
+        //     } else {
+        //         res.status(200).json(rows[0]);
+        //     }
+        // })
     } catch (err) {
         res.status(500).json({
             "status": false,
